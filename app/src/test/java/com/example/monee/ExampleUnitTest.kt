@@ -1,4 +1,4 @@
-package com.example.moneymate
+package com.example.monee
 
 import org.junit.Test
 

@@ -1,4 +1,4 @@
-package com.example.moneymate.ui.theme
+package com.example.monee.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

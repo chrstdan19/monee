@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.moneymate"
+    namespace = "com.example.monee"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.moneymate"
+        applicationId = "com.example.monee"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
@@ -41,6 +41,7 @@ android {
 
 dependencies {
 
+    implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
