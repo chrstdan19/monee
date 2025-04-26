@@ -59,6 +59,7 @@ fun HomeScreenContent(
         ) {
             BalanceCard(totalBalance = transactions.sumOf { it.amount })
             Spacer(modifier = Modifier.height(20.dp))
+            SummaryByCategory(transactions)
             Text(
                 text = "Recent Transactions",
                 style = MaterialTheme.typography.titleMedium
@@ -67,6 +68,37 @@ fun HomeScreenContent(
         }
     }
 }
+
+// Summary Category
+@Composable
+fun SummaryByCategory(transactions: List<Transaction>) {
+    if (transactions.isNotEmpty()) {
+        val categorySummary = transactions
+            .groupBy { it.category }
+            .mapValues { entry -> entry.value.sumOf { it.amount } }
+
+        val topCategory = categorySummary.maxByOrNull { kotlin.math.abs(it.value) }
+
+        topCategory?.let { (category, total) ->
+            val amountFormatted = NumberFormat.getNumberInstance(Locale("in", "ID"))
+                .format(kotlin.math.abs(total))
+
+            val summaryText = if (total < 0) {
+                "You spent Rp $amountFormatted on $category."
+            } else {
+                "You earned Rp $amountFormatted from $category."
+            }
+
+            Text(
+                text = summaryText,
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color.Gray,
+                modifier = Modifier.padding(bottom = 12.dp)
+            )
+        }
+    }
+}
+
 
 @Composable
 fun TransactionList(transactions: List<Transaction>) {
