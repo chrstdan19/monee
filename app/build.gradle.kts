@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("org.jetbrains.kotlin.kapt")
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -53,8 +55,14 @@ dependencies {
 
     implementation("androidx.compose.foundation:foundation:1.5.4")
     implementation("com.jakewharton.threetenabp:threetenabp:1.4.4")
-
     implementation(libs.androidx.material3)
+    // DataStore Preferences
+    implementation("androidx.datastore:datastore-preferences:1.1.0")
+    implementation("androidx.datastore:datastore:1.1.0")
+    // Kotlinx Serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+    // Pie chart
+    implementation(libs.androidx.ui.graphics)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

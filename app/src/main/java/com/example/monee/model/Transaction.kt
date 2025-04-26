@@ -1,9 +1,19 @@
-package com.example.monee.ui.model
+package com.example.monee.model
 
-import org.threeten.bp.LocalDate
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Transaction(
-    val title: String,
-    val amount: Int,
-    val date: LocalDate = LocalDate.now()
+    val id: String,
+    val type: TransactionType,
+    val category: String,
+    val amount: Long,
+    val date: String,
+    val note: String? = null
 )
+
+@Serializable
+enum class TransactionType {
+    INCOME,
+    EXPENSE
+}

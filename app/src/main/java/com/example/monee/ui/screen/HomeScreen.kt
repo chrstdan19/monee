@@ -5,7 +5,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -13,19 +14,28 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.monee.ui.model.Transaction
-import com.example.monee.ui.navigation.Routes
+import com.example.monee.model.Transaction
+import com.example.monee.ui.component.TransactionChartWithLegend
 
 import java.text.NumberFormat
-import java.util.Locale
-import org.threeten.bp.format.DateTimeFormatter
+import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     navController: NavController,
+    transactions: List<Transaction>,
+    onAddTransactionClick: () -> Unit
+) {
+    HomeScreenContent(
+        transactions = transactions,
+        onAddTransactionClick = onAddTransactionClick
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeScreenContent(
     transactions: List<Transaction>,
     onAddTransactionClick: () -> Unit
 ) {
@@ -36,7 +46,7 @@ fun HomeScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { onAddTransactionClick() }) {
+            FloatingActionButton(onClick = onAddTransactionClick) {
                 Text("+")
             }
         }
@@ -46,13 +56,53 @@ fun HomeScreen(
                 .padding(padding)
                 .padding(16.dp)
         ) {
-            BalanceCard(totalBalance = transactions.sumOf { it.amount })
-            Spacer(modifier = Modifier.height(20.dp))
+            BalanceCard(totalBalance = transactions.sumOf { it.amount }.toInt())
+            Spacer(modifier = Modifier.height(16.dp))
+
+            TransactionChartWithLegend(
+                incomeAmount = transactions.filter { it.amount > 0 }.sumOf { it.amount }.toFloat(),
+                expenseAmount = transactions.filter { it.amount < 0 }.sumOf { kotlin.math.abs(it.amount) }.toFloat()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+            SummaryByCategory(transactions)
+
             Text(
                 text = "Recent Transactions",
                 style = MaterialTheme.typography.titleMedium
             )
+
+            Spacer(modifier = Modifier.height(8.dp))
             TransactionList(transactions)
+        }
+    }
+}
+
+@Composable
+fun SummaryByCategory(transactions: List<Transaction>) {
+    if (transactions.isNotEmpty()) {
+        val categorySummary = transactions
+            .groupBy { it.category }
+            .mapValues { entry -> entry.value.sumOf { it.amount } }
+
+        val topCategory = categorySummary.maxByOrNull { kotlin.math.abs(it.value) }
+
+        topCategory?.let { (category, total) ->
+            val amountFormatted = NumberFormat.getNumberInstance(Locale("in", "ID"))
+                .format(kotlin.math.abs(total))
+
+            val summaryText = if (total < 0) {
+                "You spent Rp $amountFormatted on $category."
+            } else {
+                "You earned Rp $amountFormatted from $category."
+            }
+
+            Text(
+                text = summaryText,
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color.Gray,
+                modifier = Modifier.padding(bottom = 12.dp)
+            )
         }
     }
 }
@@ -90,7 +140,7 @@ fun BalanceCard(totalBalance: Int) {
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Rp ${totalBalance}",
+                    text = "Rp $totalBalance",
                     color = Color.White,
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold
@@ -107,10 +157,6 @@ fun TransactionItem(transaction: Transaction) {
 
     val amountColor = if (transaction.amount < 0) Color.Red else Color(0xFF2E7D32)
 
-    val formattedDate = transaction.date.format(
-        DateTimeFormatter.ofPattern("dd MMM yyyy")
-    )
-
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
@@ -121,13 +167,21 @@ fun TransactionItem(transaction: Transaction) {
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 12.dp)
         ) {
+            Text(
+                text = transaction.category,
+                fontSize = 12.sp,
+                color = Color.Gray
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = transaction.title,
+                    text = transaction.note ?: transaction.id,
                     fontSize = 14.sp
                 )
                 Text(
@@ -141,7 +195,7 @@ fun TransactionItem(transaction: Transaction) {
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                text = formattedDate,
+                text = transaction.date,
                 fontSize = 12.sp,
                 color = Color.Gray
             )
@@ -153,17 +207,36 @@ fun TransactionItem(transaction: Transaction) {
 @Composable
 fun HomeScreenPreview() {
     val dummyTransactions = listOf(
-        Transaction("Lunch", -25000),
-        Transaction("Salary", 5000000),
-        Transaction("Coffee", -15000)
+        Transaction(
+            id = "1",
+            type = com.example.monee.model.TransactionType.EXPENSE,
+            category = "Food",
+            amount = -25000,
+            date = "26 Apr 2025",
+            note = "Lunch with friends"
+        ),
+        Transaction(
+            id = "2",
+            type = com.example.monee.model.TransactionType.INCOME,
+            category = "Salary",
+            amount = 5000000,
+            date = "25 Apr 2025",
+            note = "April Salary"
+        ),
+        Transaction(
+            id = "3",
+            type = com.example.monee.model.TransactionType.EXPENSE,
+            category = "Coffee",
+            amount = -15000,
+            date = "25 Apr 2025",
+            note = "Kopi senja"
+        )
     )
 
-    val navController = rememberNavController()
-
-    HomeScreen(
-        navController = navController,
-        transactions = dummyTransactions,
-        onAddTransactionClick = {}
-    )
+    MaterialTheme {
+        HomeScreenContent(
+            transactions = dummyTransactions,
+            onAddTransactionClick = {}
+        )
+    }
 }
-

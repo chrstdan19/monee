@@ -5,7 +5,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.monee.ui.model.Transaction
+import com.example.monee.model.Transaction
+import com.example.monee.model.TransactionType
 import com.example.monee.ui.screen.AddTransactionScreen
 import com.example.monee.ui.screen.HomeScreen
 import com.example.monee.ui.screen.SplashScreen
@@ -21,9 +22,30 @@ fun NavGraph(navController: NavHostController) {
     var transactions by rememberSaveable {
         mutableStateOf(
             listOf(
-                Transaction("Lunch", -25000),
-                Transaction("Salary", 5000000),
-                Transaction("Coffee", -15000)
+                Transaction(
+                    id = "1",
+                    type = TransactionType.EXPENSE,
+                    category = "Food",
+                    amount = -25000L,
+                    date = "2025-04-26",
+                    note = "Lunch"
+                ),
+                Transaction(
+                    id = "2",
+                    type = TransactionType.INCOME,
+                    category = "Salary",
+                    amount = 5000000L,
+                    date = "2025-04-25",
+                    note = "April Salary"
+                ),
+                Transaction(
+                    id = "3",
+                    type = TransactionType.EXPENSE,
+                    category = "Beverage",
+                    amount = -15000L,
+                    date = "2025-04-25",
+                    note = "Coffee"
+                )
             )
         )
     }
@@ -47,7 +69,7 @@ fun NavGraph(navController: NavHostController) {
         composable(Routes.ADD_TRANSACTION) {
             AddTransactionScreen(
                 navController = navController,
-                onTransactionAdded = { transaction ->
+                onTransactionAdded = { transaction: Transaction ->
                     transactions = transactions + transaction
                 }
             )
