@@ -13,19 +13,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.monee.ui.model.Transaction
-import com.example.monee.ui.navigation.Routes
+import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.LocalDate
 
 import java.text.NumberFormat
-import java.util.Locale
-import org.threeten.bp.format.DateTimeFormatter
+import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     navController: NavController,
+    transactions: List<Transaction>,
+    onAddTransactionClick: () -> Unit
+) {
+    HomeScreenContent(
+        transactions = transactions,
+        onAddTransactionClick = onAddTransactionClick
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeScreenContent(
     transactions: List<Transaction>,
     onAddTransactionClick: () -> Unit
 ) {
@@ -121,6 +132,14 @@ fun TransactionItem(transaction: Transaction) {
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 12.dp)
         ) {
+            Text(
+                text = transaction.category,
+                fontSize = 12.sp,
+                color = Color.Gray
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -135,6 +154,16 @@ fun TransactionItem(transaction: Transaction) {
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp,
                     color = amountColor
+                )
+            }
+
+            // Notes per transaction
+            if (transaction.note.isNotBlank()) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = transaction.note,
+                    fontSize = 12.sp,
+                    color = Color.DarkGray
                 )
             }
 
@@ -153,17 +182,15 @@ fun TransactionItem(transaction: Transaction) {
 @Composable
 fun HomeScreenPreview() {
     val dummyTransactions = listOf(
-        Transaction("Lunch", -25000),
-        Transaction("Salary", 5000000),
-        Transaction("Coffee", -15000)
+        Transaction("Lunch", -25000, "Food", date = LocalDate.of(2025, 4, 26)),
+        Transaction("Salary", 5000000, "Salary", date = LocalDate.of(2025, 4, 26)),
+        Transaction("Coffee", -15000, "Food", date = LocalDate.of(2025, 4, 26))
     )
 
-    val navController = rememberNavController()
-
-    HomeScreen(
-        navController = navController,
-        transactions = dummyTransactions,
-        onAddTransactionClick = {}
-    )
+    MaterialTheme {
+        HomeScreenContent(
+            transactions = dummyTransactions,
+            onAddTransactionClick = {}
+        )
+    }
 }
-

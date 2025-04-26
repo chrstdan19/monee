@@ -2,6 +2,7 @@ package com.example.monee.ui.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -9,9 +10,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.example.monee.ui.model.Transaction
 
@@ -24,6 +26,10 @@ fun AddTransactionScreen(
     var title by remember { mutableStateOf("") }
     var amount by remember { mutableStateOf("") }
     var isExpense by remember { mutableStateOf(true) }
+    var note by remember { mutableStateOf("") }
+
+    val categories = listOf("Food", "Gift", "Salary", "Transport", "Shopping")
+    var selectedCategory by remember { mutableStateOf(categories[0]) }
 
     Scaffold(
         topBar = {
@@ -40,6 +46,7 @@ fun AddTransactionScreen(
                 .background(Color(0xFFF8F5F0)),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            // Input Title
             OutlinedTextField(
                 value = title,
                 onValueChange = { title = it },
@@ -47,6 +54,7 @@ fun AddTransactionScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
+            // Input Amount
             OutlinedTextField(
                 value = amount,
                 onValueChange = { amount = it },
@@ -57,8 +65,17 @@ fun AddTransactionScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
+            // Input Note
+            OutlinedTextField(
+                value = note,
+                onValueChange = { note = it },
+                label = { Text("Note (optional)") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            // Select Type (Income / Expense)
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Type: ")
+                Text("Type:")
                 Spacer(modifier = Modifier.width(8.dp))
                 FilterChip(
                     selected = !isExpense,
@@ -73,14 +90,34 @@ fun AddTransactionScreen(
                 )
             }
 
+            // Select Category
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text("Category:")
+                val chunkedCategories = categories.chunked(3)
+                chunkedCategories.forEach { rowItems ->
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        rowItems.forEach { category ->
+                            FilterChip(
+                                selected = selectedCategory == category,
+                                onClick = { selectedCategory = category },
+                                label = { Text(category) }
+                            )
+                        }
+                    }
+                }
+            }
+
             Spacer(modifier = Modifier.height(24.dp))
 
+            // Save Button
             Button(
                 onClick = {
                     if (title.isNotBlank() && amount.isNotBlank()) {
                         val transaction = Transaction(
                             title = title,
-                            amount = if (isExpense) -amount.toInt() else amount.toInt()
+                            amount = if (isExpense) -amount.toInt() else amount.toInt(),
+                            category = selectedCategory,
+                            note = note
                         )
                         onTransactionAdded(transaction)
                         navController.popBackStack()
@@ -89,12 +126,12 @@ fun AddTransactionScreen(
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF655D3C)
                 ),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                shape = RoundedCornerShape(24.dp)
             ) {
-                Text(
-                    text = "Save Transaction",
-                    color = Color.White
-                )
+                Text("Save Transaction", color = Color.White)
             }
         }
     }

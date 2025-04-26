@@ -50,6 +50,7 @@ fun SplashContent(
             .fillMaxSize()
             .background(
                 brush = Brush.verticalGradient(
+                    // Selection colors: Linear
                     colors = listOf(
                         Color(0xFFE8D996), // Top
                         Color(0xFF655D3C)  // Bottom
@@ -69,7 +70,7 @@ fun SplashContent(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Your Personal Daily Finance Tracker.",
+                    text = "Simplify Your Daily Spending.",
                     fontSize = 14.sp,
                     color = Color.White
                 )

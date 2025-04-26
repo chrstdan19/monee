@@ -21,13 +21,12 @@ fun NavGraph(navController: NavHostController) {
     var transactions by rememberSaveable {
         mutableStateOf(
             listOf(
-                Transaction("Lunch", -25000),
-                Transaction("Salary", 5000000),
-                Transaction("Coffee", -15000)
+                Transaction("Lunch", -25000, "Food"),
+                Transaction("Salary", 5000000, "Salary"),
+                Transaction("Coffee", -15000, "Food")
             )
         )
     }
-
     NavHost(
         navController = navController,
         startDestination = Routes.SPLASH

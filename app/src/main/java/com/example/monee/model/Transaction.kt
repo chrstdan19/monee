@@ -5,5 +5,7 @@ import org.threeten.bp.LocalDate
 data class Transaction(
     val title: String,
     val amount: Int,
-    val date: LocalDate = LocalDate.now()
+    val category: String,
+    val date: LocalDate = LocalDate.now(),
+    val note: String = ""
 )
