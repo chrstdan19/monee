@@ -15,7 +15,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
-import com.example.monee.ui.model.Transaction
+import com.example.monee.model.Transaction
+import com.example.monee.model.TransactionType
+import org.threeten.bp.LocalDate
+import org.threeten.bp.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -114,9 +117,11 @@ fun AddTransactionScreen(
                 onClick = {
                     if (title.isNotBlank() && amount.isNotBlank()) {
                         val transaction = Transaction(
-                            title = title,
-                            amount = if (isExpense) -amount.toInt() else amount.toInt(),
+                            id = System.currentTimeMillis().toString(), // Generate ID dari timestamp
+                            type = if (isExpense) TransactionType.EXPENSE else TransactionType.INCOME,
                             category = selectedCategory,
+                            amount = if (isExpense) -amount.toLong() else amount.toLong(),
+                            date = LocalDate.now().format(DateTimeFormatter.ofPattern("dd MMM yyyy")), // Tanggal hari ini
                             note = note
                         )
                         onTransactionAdded(transaction)
