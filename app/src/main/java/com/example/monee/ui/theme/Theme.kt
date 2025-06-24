@@ -18,16 +18,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.monee.R
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
-)
+import com.example.monee.ui.theme.MoneePrimary
+import com.example.monee.ui.theme.MoneeSecondary
+import com.example.monee.ui.theme.MoneeSurface
+import com.example.monee.ui.theme.MoneeDanger
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = MoneePrimary,
+    secondary = MoneeSecondary,
+    surface = MoneeSurface,
+    error = MoneeDanger
+)
+
+private val DarkColorScheme = darkColorScheme(
+    primary = MoneePrimary,
+    secondary = MoneeSecondary,
+    surface = MoneeSurface,
+    error = MoneeDanger
 )
 
 val interFontFamily = FontFamily(
@@ -65,7 +72,7 @@ val MoneeTypography = Typography(
 @Composable
 fun MoneeTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

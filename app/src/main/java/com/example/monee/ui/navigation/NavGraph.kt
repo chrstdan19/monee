@@ -5,14 +5,24 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.monee.data.fake.UserStorage
 import com.example.monee.model.Transaction
 import com.example.monee.model.TransactionType
-import com.example.monee.ui.screen.AddTransactionScreen
-import com.example.monee.ui.screen.HomeScreen
+
 import com.example.monee.ui.screen.SplashScreen
+import com.example.monee.ui.screen.HomeScreen
+
+
+import com.example.monee.ui.screen.LoginScreen
+import com.example.monee.ui.screen.RegisterScreen
+
+import com.example.monee.ui.screen.AddTransactionScreen
+
 
 object Routes {
     const val SPLASH = "splash"
+    const val LOGIN = "login"
+    const val REGISTER = "register"
     const val HOME = "home"
     const val ADD_TRANSACTION = "add_transaction"
 }
@@ -74,5 +84,34 @@ fun NavGraph(navController: NavHostController) {
                 }
             )
         }
+
+        composable(Routes.LOGIN) {
+            LoginScreen(
+                navController = navController,
+                onLogin = { email, password ->
+                    // Nanti bisa tambahkan logika auth / session
+                    navController.navigate(Routes.HOME) {
+                        popUpTo(Routes.LOGIN) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Routes.REGISTER) {
+            RegisterScreen(
+                navController = navController,
+                onRegister = { name, email, password ->
+                    val success = UserStorage.register(email, password)
+                    if (success) {
+                        navController.navigate(Routes.LOGIN) {
+                            popUpTo(Routes.REGISTER) { inclusive = true }
+                        }
+                    } else {
+                        var errorMessage = "Email already registered."
+                    }
+                }
+            )
+        }
+
     }
 }
