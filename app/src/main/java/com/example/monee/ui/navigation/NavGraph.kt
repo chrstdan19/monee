@@ -84,33 +84,12 @@ fun NavGraph(navController: NavHostController) {
                 }
             )
         }
-
         composable(Routes.LOGIN) {
-            LoginScreen(
-                navController = navController,
-                onLogin = { email, password ->
-                    // Nanti bisa tambahkan logika auth / session
-                    navController.navigate(Routes.HOME) {
-                        popUpTo(Routes.LOGIN) { inclusive = true }
-                    }
-                }
-            )
+            LoginScreen(navController = navController)
         }
 
         composable(Routes.REGISTER) {
-            RegisterScreen(
-                navController = navController,
-                onRegister = { name, email, password ->
-                    val success = UserStorage.register(email, password)
-                    if (success) {
-                        navController.navigate(Routes.LOGIN) {
-                            popUpTo(Routes.REGISTER) { inclusive = true }
-                        }
-                    } else {
-                        var errorMessage = "Email already registered."
-                    }
-                }
-            )
+            RegisterScreen(navController = navController)
         }
 
     }

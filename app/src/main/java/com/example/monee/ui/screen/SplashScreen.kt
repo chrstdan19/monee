@@ -18,27 +18,42 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.monee.R
 import com.example.monee.ui.navigation.Routes
 import kotlinx.coroutines.delay
+import com.example.monee.ui.auth.AuthViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
-fun SplashScreen(navController: NavController) {
+fun SplashScreen(
+    navController: NavHostController,
+    viewModel: AuthViewModel = viewModel()
+) {
+    val isLoggedIn by viewModel.observeLoginStatus().collectAsState(initial = false)
     var visible by remember { mutableStateOf(false) }
-
-    val interBold = FontFamily(Font(R.font.inter_bold))
 
     LaunchedEffect(Unit) {
         visible = true
         delay(2000)
-        navController.navigate(Routes.HOME) {
-            popUpTo(Routes.SPLASH) { inclusive = true }
+        if (isLoggedIn) {
+            navController.navigate(Routes.HOME) {
+                popUpTo(Routes.SPLASH) { inclusive = true }
+            }
+        } else {
+            navController.navigate(Routes.LOGIN) {
+                popUpTo(Routes.SPLASH) { inclusive = true }
+            }
         }
     }
 
-    SplashContent(fontFamily = interBold, visible = visible)
+    SplashContent(
+        fontFamily = FontFamily(Font(R.font.inter_bold)),
+        visible = visible
+    )
 }
+
 
 @Composable
 fun SplashContent(

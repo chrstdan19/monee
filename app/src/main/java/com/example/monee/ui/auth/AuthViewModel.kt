@@ -3,6 +3,7 @@ package com.example.monee.ui.auth
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.monee.data.fake.UserStorage
 import com.example.monee.data.session.SessionManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,8 +19,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
-            // Simulasi login dummy, kamu bisa ganti nanti ke API atau Room
-            if (email == "user@example.com" && password == "password") {
+            if (UserStorage.login(email, password)) {
                 sessionManager.login(email)
                 _loginSuccess.value = true
             } else {
@@ -37,3 +37,4 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     fun observeLoginStatus(): Flow<Boolean> = sessionManager.isLoggedIn
 }
+
