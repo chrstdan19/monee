@@ -86,7 +86,12 @@ fun RegisterScreen(
                 Button(
                     onClick = {
                         if (name.isNotBlank() && email.isNotBlank() && password.isNotBlank()) {
-                            val success = UserStorage.register(email, password)
+                            val success = UserStorage.register(email, password, name)
+                            if (password.length < 8) {
+                                errorMessage = "Password must be at least 8 characters."
+                                return@Button
+                            }
+
                             if (success) {
                                 navController.navigate(Routes.LOGIN) {
                                     popUpTo(Routes.REGISTER) { inclusive = true }

@@ -14,6 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.monee.data.fake.UserStorage
 import com.example.monee.model.Transaction
 import com.example.monee.ui.component.TransactionChartWithLegend
 
@@ -25,7 +26,7 @@ import java.util.*
 fun HomeScreen(
     navController: NavController,
     transactions: List<Transaction>,
-    onAddTransactionClick: () -> Unit
+    onAddTransactionClick: () -> Unit,
 ) {
     HomeScreenContent(
         transactions = transactions,
@@ -39,10 +40,12 @@ fun HomeScreenContent(
     transactions: List<Transaction>,
     onAddTransactionClick: () -> Unit
 ) {
+    val userName = UserStorage.currentUserName ?: "User"
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Hello, Daniel 👋", fontSize = 18.sp) }
+                title = { Text("Hello, $userName 👋", fontSize = 18.sp) }
             )
         },
         floatingActionButton = {

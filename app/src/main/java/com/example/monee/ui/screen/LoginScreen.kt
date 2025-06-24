@@ -76,6 +76,11 @@ fun LoginScreen(
                 Button(
                     onClick = {
                         if (email.isNotBlank() && password.isNotBlank()) {
+                            if (password.length < 8) {
+                                errorMessage = "Password must be at least 8 characters."
+                                return@Button
+                            }
+
                             val success = UserStorage.login(email, password)
                             if (success) {
                                 navController.navigate(Routes.HOME) {

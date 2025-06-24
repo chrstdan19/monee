@@ -1,15 +1,22 @@
 package com.example.monee.data.fake
 
 object UserStorage {
-    private val users = mutableListOf<Pair<String, String>>()
+    private var users = mutableMapOf<String, Pair<String, String>>()
+    var currentUserName: String? = null
 
-    fun register(email: String, password: String): Boolean {
-        if (users.any { it.first == email }) return false
-        users.add(email to password)
+    fun register(email: String, password: String, name: String): Boolean {
+        if (users.containsKey(email)) return false
+        users[email] = password to name
         return true
     }
 
     fun login(email: String, password: String): Boolean {
-        return users.any { it.first == email && it.second == password }
+        val user = users[email]
+        return if (user != null && user.first == password) {
+            currentUserName = user.second
+            true
+        } else {
+            false
+        }
     }
 }
