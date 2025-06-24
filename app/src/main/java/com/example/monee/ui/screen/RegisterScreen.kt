@@ -10,12 +10,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import com.example.monee.ui.navigation.Routes
 import com.example.monee.ui.theme.MoneeTheme
+import com.example.monee.data.fake.UserStorage
 
 @Composable
 fun RegisterScreen(
-    navController: NavHostController,
-    onRegister: (name: String, email: String, password: String) -> Unit
+    navController: NavHostController
 ) {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -85,7 +86,14 @@ fun RegisterScreen(
                 Button(
                     onClick = {
                         if (name.isNotBlank() && email.isNotBlank() && password.isNotBlank()) {
-                            onRegister(name, email, password)
+                            val success = UserStorage.register(email, password)
+                            if (success) {
+                                navController.navigate(Routes.LOGIN) {
+                                    popUpTo(Routes.REGISTER) { inclusive = true }
+                                }
+                            } else {
+                                errorMessage = "Email already registered."
+                            }
                         } else {
                             errorMessage = "Please fill all fields."
                         }
@@ -98,8 +106,8 @@ fun RegisterScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 TextButton(onClick = {
-                    navController.navigate("login") {
-                        popUpTo("register") { inclusive = true }
+                    navController.navigate(Routes.LOGIN) {
+                        popUpTo(Routes.REGISTER) { inclusive = true }
                     }
                 }) {
                     Text(
@@ -118,8 +126,7 @@ fun RegisterScreen(
 fun RegisterScreenPreview() {
     MoneeTheme {
         RegisterScreen(
-            navController = rememberNavController(),
-            onRegister = { _, _, _ -> }
+            navController = rememberNavController()
         )
     }
 }
