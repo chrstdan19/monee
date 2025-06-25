@@ -30,34 +30,35 @@ object Routes {
 @Composable
 fun NavGraph(navController: NavHostController) {
     var transactions by rememberSaveable {
-        mutableStateOf(
-            listOf(
-                Transaction(
-                    id = "1",
-                    type = TransactionType.EXPENSE,
-                    category = "Food",
-                    amount = -25000L,
-                    date = "2025-04-26",
-                    note = "Lunch"
-                ),
-                Transaction(
-                    id = "2",
-                    type = TransactionType.INCOME,
-                    category = "Salary",
-                    amount = 5000000L,
-                    date = "2025-04-25",
-                    note = "April Salary"
-                ),
-                Transaction(
-                    id = "3",
-                    type = TransactionType.EXPENSE,
-                    category = "Beverage",
-                    amount = -15000L,
-                    date = "2025-04-25",
-                    note = "Coffee"
-                )
-            )
-        )
+        mutableStateOf(emptyList<Transaction>())
+//        mutableStateOf(
+//            listOf(
+//                Transaction(
+//                    id = "1",
+//                    type = TransactionType.EXPENSE,
+//                    category = "Food",
+//                    amount = -25000L,
+//                    date = "2025-04-26",
+//                    note = "Lunch"
+//                ),
+//                Transaction(
+//                    id = "2",
+//                    type = TransactionType.INCOME,
+//                    category = "Salary",
+//                    amount = 5000000L,
+//                    date = "2025-04-25",
+//                    note = "April Salary"
+//                ),
+//                Transaction(
+//                    id = "3",
+//                    type = TransactionType.EXPENSE,
+//                    category = "Beverage",
+//                    amount = -15000L,
+//                    date = "2025-04-25",
+//                    note = "Coffee"
+//                )
+//            )
+//        )
     }
 
     NavHost(
