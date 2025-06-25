@@ -54,11 +54,12 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
 
     implementation("androidx.compose.foundation:foundation:1.5.4")
-    implementation("com.jakewharton.threetenabp:threetenabp:1.4.4")
+    implementation("com.jakewharton.threetenabp:threetenabp:1.4.7")
     implementation(libs.androidx.material3)
     // DataStore Preferences
     implementation("androidx.datastore:datastore-preferences:1.1.0")
     implementation("androidx.datastore:datastore:1.1.0")
+
     // Kotlinx Serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
     // Pie chart

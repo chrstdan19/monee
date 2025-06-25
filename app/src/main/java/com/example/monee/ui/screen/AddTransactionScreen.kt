@@ -1,5 +1,6 @@
 package com.example.monee.ui.screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -115,17 +116,27 @@ fun AddTransactionScreen(
             // Save Button
             Button(
                 onClick = {
-                    if (title.isNotBlank() && amount.isNotBlank()) {
-                        val transaction = Transaction(
-                            id = System.currentTimeMillis().toString(), // Generate ID dari timestamp
-                            type = if (isExpense) TransactionType.EXPENSE else TransactionType.INCOME,
-                            category = selectedCategory,
-                            amount = if (isExpense) -amount.toLong() else amount.toLong(),
-                            date = LocalDate.now().format(DateTimeFormatter.ofPattern("dd MMM yyyy")), // Tanggal hari ini
-                            note = note
-                        )
-                        onTransactionAdded(transaction)
-                        navController.popBackStack()
+                    val amountLong = amount.toLongOrNull()
+
+                    if (title.isNotBlank() && amountLong != null) {
+                        try {
+                            val transaction = Transaction(
+                                id = System.currentTimeMillis().toString(),
+                                type = if (isExpense) TransactionType.EXPENSE else TransactionType.INCOME,
+                                category = selectedCategory,
+                                amount = if (isExpense) -amountLong else amountLong,
+                                date = LocalDate.now().format(DateTimeFormatter.ofPattern("dd MMM yyyy")),
+                                note = note.takeIf { it.isNotBlank() }
+                            )
+                            onTransactionAdded(transaction)
+                            navController.popBackStack()
+
+                        } catch (e: Exception) {
+                            Log.e("AddTransaction", "Error creating transaction", e)
+                        }
+
+                    } else {
+                        Log.e("AddTransaction", "Invalid input: Title or Amount is not valid.")
                     }
                 },
                 colors = ButtonDefaults.buttonColors(

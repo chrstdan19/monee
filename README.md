@@ -10,7 +10,7 @@ This project is created as part of the MidTerm Test for Mobile Programming cours
 - View recent transactions
 - Visualize financial summary with a pie chart.
 
-## Screen Preview
+## Demo
 
 | Splash Screen | Home Screen | Add Transaction |
 |:-------------:|:-----------:|:----------------:|
@@ -19,3 +19,5 @@ This project is created as part of the MidTerm Test for Mobile Programming cours
 | Register Screen | Login Screen |
 |:---------------:|:------------:|
 | ![Register Screen](./assets/register-screen.png) | ![Login Screen](./assets/login-screen.png) |
+
+![Record](./assets/demo.gif)
